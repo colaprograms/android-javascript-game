@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type="text/css">
+      body {
+        background-color: #FFFFFF;
+      }
+    </style>
+    <script type="text/javascript">
+      window.addEventListener("error",
+        function(e) {
+          if(window.android && window.android.showexception) {
+            e.preventDefault();
+            if(e.error) {
+              android.showexception(e.error.stack)
+            }
+            else {
+              android.showexception(`${e.message}\n File: ${e.filename}\n Line: ${e.lineo}\n Column: ${e.colno}`);
+            }
+          }
+        },
+        true
+      );
+      /*window.onerror = function(m, s, l, c, e) {
+        if(android.showexception !== undefined)
+          android.showexception(e.stack);
+      }*/
+    </script>
+    <script type="text/javascript" src="jquery-3.4.1.js"></script>
+    <!-- location functions -->
+    <script type="text/javascript" src="js/location.js"></script>
+    <!-- if there is no real interface, make fake one -->
+    <script type="text/javascript" src="js/pseudo.js"></script>
+    <!-- main script -->
+    <script type="text/javascript" src="js/shoe.js"></script>
+  </head>
+  <body>
+    <div class="test"></div>
+    <div id="location">No location</div>
+  </body>
+</html>

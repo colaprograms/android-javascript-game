@@ -1,0 +1,3 @@
+#!/bin/bash
+cd /home/cola/AndroidStudioProjects/Tapshoe/app/src/main/assets/www/
+python -m http.server
