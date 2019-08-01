@@ -21,7 +21,8 @@ fun complain(s: String) {
     println("Tapshoe: ${s}")
 }
 
-var STARTING_URL = "file:///android_asset/www/index.html"
+const val STARTING_URL = "https://skeletonplanet.com/secret/tapshoe/index.html"
+//var STARTING_URL = "file:///android_asset/www/index.html"
 
 class MainActivity : AppCompatActivity() {
     private lateinit var webview: WebView
@@ -39,10 +40,11 @@ class MainActivity : AppCompatActivity() {
         js_interface = JS_Interface(this)
         webview = makewebview()
         LocationSystem("location", this, 0).addtoindices()
+        SettingsActivitySystem("settingsactivity", this, 1).addtoindices()
     }
 
     fun loadUrl(url: String) {
-        webview.loadUrl(url);
+        webview.loadUrl(url)
     }
 
     fun run_javascript(js: String) {
@@ -51,12 +53,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        var system = jssystemindex[ permissionCodeIndex[requestCode] ]
+        val system = jssystemindex[ permissionCodeIndex[requestCode] ]
         system!!.permissionsCallback(requestCode, permissions, grantResults)
     }
 
     fun makewebview(): WebView {
-        var webview = findViewById<WebView>(R.id.webview)
+        val webview = findViewById<WebView>(R.id.webview)
         webview.settings.apply {
             javaScriptEnabled = true
             layoutAlgorithm = WebSettings.LayoutAlgorithm.NORMAL

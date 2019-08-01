@@ -12,6 +12,11 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
+        <activity
+                android:name=".SettingsActivity"
+                android:label="@string/title_activity_settings"
+                android:parentActivityName="com.skeletonplanet.tapshoe.MainActivity">
+        </activity>
         <activity android:name=".exceptionactivity">
         </activity>
         <activity

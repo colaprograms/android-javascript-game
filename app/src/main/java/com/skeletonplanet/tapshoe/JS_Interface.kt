@@ -11,7 +11,13 @@ class JS_Interface(private val activity: MainActivity) {
     fun cmd(system: String, what: String, data: String): String {
         return when(val s = activity.jssystemindex.get(system)) {
             null -> "error: no such system ${s}"
-            else -> s.cmd(what, data)
+            else ->
+                try {
+                    s.cmd(what, data)
+                }
+                catch(e: Exception) {
+                    "error: exception: " + e.localizedMessage + "\n" + e.stackTrace
+                }
         }
     }
 
