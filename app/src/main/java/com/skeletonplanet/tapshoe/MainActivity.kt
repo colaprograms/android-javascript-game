@@ -1,6 +1,7 @@
 package com.skeletonplanet.tapshoe
 
 import android.Manifest
+import android.annotation.TargetApi
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
@@ -8,9 +9,7 @@ import android.content.pm.PackageManager
 import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.webkit.JavascriptInterface
-import android.webkit.WebSettings
-import android.webkit.WebView
+import android.webkit.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
@@ -21,14 +20,45 @@ fun complain(s: String) {
     println("Tapshoe: ${s}")
 }
 
-const val STARTING_URL = "https://skeletonplanet.com/secret/tapshoe/index.html"
-//var STARTING_URL = "file:///android_asset/www/index.html"
+class InterceptWebViewClient: WebViewClient() {
+    @TargetApi(24)
+    override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+        return false; // load in the webview
+    }
+
+    // for API < 24
+    override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+        return false; // load in the webview
+    }
+    /*
+    @TargetApi(24)
+    override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+        if(request != null && request.url.scheme == "https" && request.url.host == "skeletonplanet.com") {
+            return false // load in the webview
+        }
+        else {
+            return super.shouldOverrideUrlLoading(view, request)
+        }
+    }
+
+    override fun shouldOverrideUrlLoading(view: WebView?, url: String): Boolean {
+        // for API < 24
+        if(url.startsWith("https://skeletonplanet.com/")) {
+            return false // load in the webview
+        }
+        else {
+            return super.shouldOverrideUrlLoading(view, url)
+        }
+    }
+    */
+}
 
 class MainActivity : AppCompatActivity() {
     private lateinit var webview: WebView
     private lateinit var js_interface: JS_Interface
     var jssystemindex = mutableMapOf<String, JavascriptAccessibleSystem>()
     private var permissionCodeIndex = mutableMapOf<Int, String>()
+    private lateinit var preferenceknower: PreferenceKnower
 
     fun add_permission_callback(permissionRequestCode: Int, system: String) {
         permissionCodeIndex[permissionRequestCode] = system
@@ -37,6 +67,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        preferenceknower = PreferenceKnower(this)
         js_interface = JS_Interface(this)
         webview = makewebview()
         LocationSystem("location", this, 0).addtoindices()
@@ -62,10 +93,13 @@ class MainActivity : AppCompatActivity() {
         webview.settings.apply {
             javaScriptEnabled = true
             layoutAlgorithm = WebSettings.LayoutAlgorithm.NORMAL
-            setAppCacheEnabled(false)
-            cacheMode = WebSettings.LOAD_NO_CACHE
+            if(!preferenceknower.should_be_cached) {
+                setAppCacheEnabled(false)
+                cacheMode = WebSettings.LOAD_NO_CACHE
+            }
         }
         webview.addJavascriptInterface(js_interface, "android")
+        webview.webViewClient = InterceptWebViewClient()
         webview.loadUrl(STARTING_URL)
         return webview
     }

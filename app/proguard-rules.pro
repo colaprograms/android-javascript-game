@@ -19,3 +19,17 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-keepclassmembers class com.skeletonplanet.tapshoe.JS_Interface {
+   public *;
+}
+
+-keepattributes *Annotation*, InnerClasses
+-dontnote kotlinx.serialization.SerializationKt
+-keep,includedescriptorclasses class com.skeletonplanet.tapshoe.**$$serializer { *; } # <-- change package name to your app's
+-keepclassmembers class com.skeletonplanet.tapshoe.** { # <-- change package name to your app's
+    *** Companion;
+}
+-keepclasseswithmembers class com.skeletonplanet.tapshoe.** { # <-- change package name to your app's
+    kotlinx.serialization.KSerializer serializer(...);
+}

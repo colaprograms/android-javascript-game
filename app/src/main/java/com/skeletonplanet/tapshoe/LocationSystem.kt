@@ -22,6 +22,7 @@ class LocationSystem(name: String, activity: MainActivity, permissionRequestCode
     override fun cmd(what: String, data: String): String {
         return when(what) {
             "start" -> start_system()
+            "update" -> ask_for_update()
             "get" -> getLocation()
             else -> "error: unknown what parameter ${what}"
         }
@@ -35,21 +36,31 @@ class LocationSystem(name: String, activity: MainActivity, permissionRequestCode
         return "done: started"
     }
 
+    fun ask_for_update(): String {
+        if(have_position_permission) {
+            try {
+                fusedLocationClient.lastLocation
+                    .addOnSuccessListener {
+                        location = it
+                    }
+                return "done: updating"
+            } catch(e: SecurityException) {
+                return "error: we should have permission to read the location, but we don't"
+            }
+        }
+        else if(requested_position_permission) {
+            return "error: don't have permission yet or were refused"
+        }
+        else {
+            return "error: system not started"
+        }
+    }
+
     override fun gotpermission(what: String) {
         if (what == Manifest.permission.ACCESS_FINE_LOCATION) {
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
             have_position_permission = true
-            try {
-                complain("trying last location")
-                fusedLocationClient.lastLocation
-                    .addOnSuccessListener {
-                        complain("got location")
-                        location = it
-                    }
-            } catch (e: SecurityException) {
-                complain("we should have permission, but somehow we don't")
-                throw e
-            }
+            ask_for_update()
         }
     }
 

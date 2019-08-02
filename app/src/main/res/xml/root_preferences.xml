@@ -14,7 +14,21 @@
   ~ limitations under the License.
   -->
 
+<!-- <PreferenceCategory
+    app:title="Story source">
+    </PreferenceCategory
+-->
+
 <androidx.preference.PreferenceScreen
-        xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ListPreference
+            android:defaultValue="1"
+            android:title="Story source"
+            android:entries="@array/source_entries"
+            android:entryValues="@array/source_values"
+            android:key="story_source"
+            android:summary="Choose between local or remote story data"/>
 
 </androidx.preference.PreferenceScreen>
